@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veo 3 Prompt Generator</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f5f5;
+            --text-color: #333;
+            --border-color: #ddd;
+            --background-color: #ffffff;
+            --hover-color: #357abd;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: var(--background-color);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 25px;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: var(--hover-color);
+        }
+        .output-section {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+         @media (min-width: 992px) {
+            .output-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .output-box {
+            background: var(--secondary-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .output-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .output-box textarea {
+            width: 100%;
+            height: 400px;
+            background: #fff;
+            font-family: "Courier New", Courier, monospace;
+        }
+        .output-box textarea:read-only {
+            background: #e9ecef;
+            cursor: not-allowed;
+        }
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .copy-button {
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        .copy-button:hover {
+            background-color: var(--hover-color);
+        }
+        .copy-button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Veo 3 Prompt Generator</h1>
+        <form id="prompt-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="scene-title">1. Judul Scene</label>
+                    <input type="text" id="scene-title" value="Stasiun kereta di Indonesia">
+                </div>
+                <div class="form-group">
+                    <label for="char-action">4. Aksi Karakter</label>
+                    <input type="text" id="char-action" value="berjalan di sekitar stasiun sambil melihat jadwal keberangkatan kereta dan aktivitas penumpang.">
+                </div>
+                <div class="form-group full-width">
+                    <label for="char-desc">2. Deskripsi Karakter Inti</label>
+                    <textarea id="char-desc">seorang vlogger pria muda asal depok berusia 24 Tahun. Perawakan/bentuk tubuh : kurus, tinggi 177 cm, proporsinal.
+Warna kulit : Sawo matang cerah
+Rambut : lurus sebahu, hitam kecoklatan, memakai topi rimba.
+Wajah : wajah oval, alis tebal alami, mata hitam besar, hidung mancung, memakai masker
+Pakaian : mengenakan jaker parasut warna abu-abu dan celana tactical warna hitam membawa tas ransel besar dibelakang, sling bag di depan dan membawa kamera go pro 4 di tangan kanan.</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="char-voice">3. Detail Suara Karakter</label>
+                    <textarea id="char-voice">dia berbicara dengan suara leaki-laki muda yang ramah.
+Nada : Mezzo soprano
+Timbre : bersahabat dan enerjik
+Aksen / logat : logat indonesia dengan sentuhan khas depk betawi, berbicara murni dalam bahasa Indonesia</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="char-expression">5. Ekspresi Karakter</label>
+                    <textarea id="char-expression">karakter menunjukan ekspresi antusias, siap untuk melakukakn perjalanan.</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="setting">6. Latar Tempat & Waktu</label>
+                    <textarea id="setting">latar tempat: Stasiun kereta Depok Baruterdapat penumpang yang sedang menunggu commuter line, ada KRL yang sedang berhenti.
+Waktu : pagi hari yang cerah</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="visual-details">7. Detail Visual Tambahan</label>
+                    <select id="camera-movement">
+                        <!-- Options will be populated by JS -->
+                    </select>
+                    <textarea id="visual-details" style="margin-top: 10px;">Pencahayaan: natural dari suasana pagi yang cerah
+Gaya video/art style: cinematic realistis
+Kualitas visual : Resolusi 4K 60 Fps</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="atmosphere">8. Suasana Keseluruhan</label>
+                    <textarea id="atmosphere">suasana sibuk, ramai, dengan kesan perjalanan yang hidup dan dinamis.</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="sound-env">9. Suara Lingkungan</label>
+                    <textarea id="sound-env">SOUND : suara announcer keberangkatan kereta, suara klakson kereta, percakapan samar antar penumpang</textarea>
+                </div>
+                 <div class="form-group full-width">
+                    <label for="char-dialogue">10. Dialog Karakter</label>
+                    <textarea id="char-dialogue">DIALOG dalam Bahasa Indonesia: Karakter berkata: Halo semuanya kembali lagi bersama devananta, kali ini kita ada di stasiun depok baru, tebak saya mau pergi kemana lagi ?</textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="negative-prompt">11. Negative Prompt</label>
+                    <textarea id="negative-prompt">Hindari: teks di layar, subtitle, tulisan di video, font, logo, distorsi, artefak, anomali, wajah ganda, anggota badan cacat, tangan tidak normal, orang tambahan, objek mengganggu, kualitas rendah, buram, glitch, suara robotik, suara pecah.</textarea>
+                </div>
+            </div>
+            <div class="button-container">
+                <button type="button" id="generate-btn">Generate Prompt</button>
+            </div>
+        </form>
+
+        <div class="output-section">
+            <div class="output-box">
+                <h3>Prompt (Bahasa Indonesia - Editable)</h3>
+                <textarea id="output-indonesia"></textarea>
+            </div>
+            <div class="output-box">
+                <div class="output-header">
+                    <h3>Final Prompt (English - Read Only)</h3>
+                    <button type="button" id="copy-btn" class="copy-button">Copy</button>
+                </div>
+                <textarea id="output-english" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cameraMovements = {
+            "Gerakan Umum": {
+                "Static Shot": "Bidikan Statis",
+                "Pan Left": "Geser Kiri",
+                "Pan Right": "Geser Kanan",
+                "Tilt Up": "Dongak ke Atas",
+                "Tilt Down": "Dongak ke Bawah",
+                "Dolly": "Doli",
+                "Truck": "Truk",
+                "Pedestal": "Pedestal",
+                "Tracking Shot": "Bidikan Lacak",
+                "Steadicam Shot": "Bidikan Steadicam",
+                "Crane Shot": "Bidikan Derek",
+                "Handheld Shot": "Bidikan Genggam",
+            },
+            "Higgsfield.ai Motions": {
+                "360 Orbit": "Orbit 360",
+                "3D Rotation": "Rotasi 3D",
+                "Action Run": "Lari Aksi",
+                "Agent Reveal": "Penampakan Agen",
+                "Angel Wings": "Sayap Malaikat",
+                "Arc Left": "Lengkung Kiri",
+                "Arc Right": "Lengkung Kanan",
+                "Bloom Mouth": "Mulut Mekar",
+                "Buckle Up": "Kencangkan Sabuk",
+                "Bullet Time": "Waktu Peluru",
+                "Car Chasing": "Pengejaran Mobil",
+                "Car Explosion": "Ledakan Mobil",
+                "Car Grip": "Cengkeraman Mobil",
+                "Catch the pulse": "Tangkap Denyutnya",
+                "Crane Down": "Derek Turun",
+                "Crane Over The Head": "Derek di Atas Kepala",
+                "Crane Up": "Derek Naik",
+                "Crash Zoom In": "Zoom Cepat Masuk",
+                "Crash Zoom Out": "Zoom Cepat Keluar",
+                "Datamosh": "Datamosh",
+                "Dirty Lens": "Lensa Kotor",
+                "Disintegration": "Disintegrasi",
+                "Dolly In": "Doli Masuk",
+                "Dolly Left": "Doli Kiri",
+                "Dolly Out": "Doli Keluar",
+                "Dolly Right": "Doli Kanan",
+                "Dolly Zoom In": "Zoom Doli Masuk",
+                "Dolly Zoom Out": "Zoom Doli Keluar",
+                "Double Dolly": "Doli Ganda",
+                "Dutch Angle": "Sudut Belanda",
+                "Eyes In": "Mata Masuk",
+                "Face Punch": "Pukulan Wajah",
+                "Fisheye": "Mata Ikan",
+                "Floating Fish": "Ikan Mengambang",
+                "Flood": "Banjir",
+                "Floral Eyes": "Mata Bunga",
+                "Flying": "Terbang",
+                "Focus Change": "Perubahan Fokus",
+                "FPV Drone": "Drone FPV",
+                "Garden Bloom": "Taman Mekar",
+                "General": "Umum",
+                "Glam": "Glamor",
+                "Glowshift": "Pergeseran Cahaya",
+                "Handheld": "Genggam",
+                "Head Explosion": "Ledakan Kepala",
+                "Head Tracking": "Pelacakan Kepala",
+                "Hyperlapse": "Hyperlapse",
+                "Incline": "Miring",
+                "Invisible": "Tak Terlihat",
+                "Jelly Drift": "Drift Kenyal",
+                "Jib Down": "Jib Turun",
+                "Jib Up": "Jib Naik",
+                "Kiss": "Ciuman",
+                "Lazy Susan": "Lazy Susan",
+                "Lens Crack": "Retak Lensa",
+                "Lens Flare": "Sinar Lensa",
+                "Levitation": "Levitasi",
+                "Low Shutter": "Rana Lambat",
+                "Medusa Gorgona": "Medusa Gorgona",
+                "Melting": "Meleleh",
+                "Morphskin": "Kulit Berubah",
+                "Mouth In": "Mulut Masuk",
+                "Push To Glass": "Dorong ke Kaca",
+                "Rap Flex": "Fleks Rap",
+                "Robo Arm": "Lengan Robot",
+                "Set on Fire": "Terbakar",
+                "Skin Surge": "Gelombang Kulit",
+                "Snorricam": "Snorricam",
+                "Soul Jump": "Lompatan Jiwa",
+                "Static": "Statis",
+                "Super Dolly In": "Super Doli Masuk",
+                "Super Dolly Out": "Super Doli Keluar",
+                "Symbiote": "Simbiosis",
+                "Tentacles": "Tentakel",
+                "Thunder God": "Dewa Petir",
+                "Tilt Down": "Miring ke Bawah",
+                "Tilt up": "Miring ke Atas",
+                "Timelapse Human": "Selang Waktu Manusia",
+                "Timelapse Landscape": "Selang Waktu Pemandangan",
+                "Turning Metal": "Logam Berputar",
+                "Whip Pan": "Pan Cambuk",
+                "Wiggle": "Goyangan",
+                "Wind to Face": "Angin ke Wajah",
+                "YoYo Zoom": "Zoom YoYo",
+                "Zoom In": "Perbesar",
+                "Zoom Out": "Perkecil",
+            }
+        };
+
+        function populateCameraMovements() {
+            const select = document.getElementById('camera-movement');
+            select.innerHTML = '';
+            for (const group in cameraMovements) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = group;
+                for (const [english, indonesian] of Object.entries(cameraMovements[group])) {
+                    const option = document.createElement('option');
+                    option.value = english;
+                    option.textContent = `${english} (${indonesian})`;
+                    optgroup.appendChild(option);
+                }
+                select.appendChild(optgroup);
+            }
+            // Set a default selection
+            select.value = "Tracking Shot";
+        }
+
+        function generatePrompt() {
+            // Get all values from the form
+            const sceneTitle = document.getElementById('scene-title').value.trim();
+            const charDesc = document.getElementById('char-desc').value.trim();
+            const charVoice = document.getElementById('char-voice').value.trim();
+            const charAction = document.getElementById('char-action').value.trim();
+            const charExpression = document.getElementById('char-expression').value.trim();
+            const setting = document.getElementById('setting').value.trim();
+            const cameraMovement = document.getElementById('camera-movement').value;
+            const visualDetails = document.getElementById('visual-details').value.trim();
+            const atmosphere = document.getElementById('atmosphere').value.trim();
+            const soundEnv = document.getElementById('sound-env').value.trim();
+            const charDialogue = document.getElementById('char-dialogue').value.trim();
+            const negativePrompt = document.getElementById('negative-prompt').value.trim();
+
+            // --- Generate Indonesian Prompt ---
+            let promptID = `**Judul:** ${sceneTitle}\n\n`;
+            promptID += `**Deskripsi:** Sebuah video sinematik yang menampilkan ${charDesc}. `;
+            promptID += `Karakter terlihat ${charAction}, menunjukkan ekspresi ${charExpression}. `;
+            promptID += `Video ini berlatar di ${setting}. Suasananya adalah ${atmosphere}.\n\n`;
+            promptID += `**Detail Visual:** Gaya visualnya ${visualDetails.split('\n')[1].split(':')[1].trim()} dengan ${visualDetails.split('\n')[0].split(':')[1].trim()}. Kualitas visual adalah ${visualDetails.split('\n')[2].split(':')[1].trim()}. `;
+            promptID += `Gerakan kamera menggunakan **${cameraMovement}**, mengikuti karakter secara dinamis untuk meningkatkan nuansa sinematik.\n\n`;
+            promptID += `**Audio:** Suara lingkungan mencakup ${soundEnv.replace('SOUND :', '').trim()}. Karakter berbicara, ${charVoice.split('\n')[0].trim()}. Detail suaranya adalah: ${charVoice.split('\n').slice(1).join(', ')}. `;
+            promptID += `${charDialogue}\n\n`;
+            promptID += `**Catatan Penting:** Pastikan suara karakter konsisten. ${negativePrompt.replace('Hindari:', 'Hindari hal-hal berikut:')}`;
+
+            document.getElementById('output-indonesia').value = promptID;
+            
+            // --- Generate English Prompt ---
+            let dialogueOnly = charDialogue.split("Karakter berkata:")[1] || " no dialogue specified.";
+            dialogueOnly = dialogueOnly.trim();
+
+
+            let promptEN = `**Title:** ${sceneTitle}\n\n`;
+            promptEN += `**Description:** A cinematic video featuring a ${charDesc.replace('seorang vlogger pria muda asal depok berusia 24 Tahun.', '24-year-old male vlogger from Depok.')
+                                                                                 .replace('Perawakan/bentuk tubuh : kurus, tinggi 177 cm, proporsinal.', 'Physique: slim, 177 cm tall, proportional.')
+                                                                                 .replace('Warna kulit : Sawo matang cerah', 'Skin color: light brown')
+                                                                                 .replace('Rambut : lurus sebahu, hitam kecoklatan, memakai topi rimba.', 'Hair: shoulder-length straight, brownish-black, wearing a jungle hat.')
+                                                                                 .replace('Wajah : wajah oval, alis tebal alami, mata hitam besar, hidung mancung, memakai masker', 'Face: oval face, natural thick eyebrows, large black eyes, sharp nose, wearing a mask')
+                                                                                 .replace('Pakaian : mengenakan jaker parasut warna abu-abu dan celana tactical warna hitam membawa tas ransel besar dibelakang, sling bag di depan dan membawa kamera go pro 4 di tangan kanan.', 'Clothing: wearing a gray parachute jacket and black tactical pants, carrying a large backpack, a sling bag in the front, and a GoPro 4 camera in his right hand.')}. `;
+            promptEN += `The character is seen ${charAction.replace('berjalan di sekitar stasiun sambil melihat jadwal keberangkatan kereta dan aktivitas penumpang.', 'walking around the station, looking at train departure schedules and passenger activities')}, showing an expression of ${charExpression.replace('karakter menunjukan ekspresi antusias, siap untuk melakukakn perjalanan.', 'enthusiasm, ready for a journey')}. `;
+            promptEN += `The video is set at ${setting.replace('latar tempat: Stasiun kereta Depok Baruterdapat penumpang yang sedang menunggu commuter line, ada KRL yang sedang berhenti.', 'the Depok Baru train station, with passengers waiting for the commuter line and a KRL train stopped.')
+                                                  .replace('Waktu : pagi hari yang cerah', 'Time: a bright morning')}. The atmosphere is ${atmosphere.replace('suasana sibuk, ramai, dengan kesan perjalanan yang hidup dan dinamis.', 'busy, crowded, with a lively and dynamic sense of travel')}.\n\n`;
+            
+            promptEN += `**Visual Details:** The visual style is ${visualDetails.split('\n')[1].split(':')[1].trim()} with ${visualDetails.split('\n')[0].split(':')[1].trim()}. Visual quality is ${visualDetails.split('\n')[2].split(':')[1].trim()}. `;
+            promptEN += `The camera movement uses a **${cameraMovement}**, dynamically following the character to enhance the cinematic feel.\n\n`;
+
+            promptEN += `**Audio:** Ambient sounds include ${soundEnv.replace('SOUND :', '').replace('suara announcer keberangkatan kereta, suara klakson kereta, percakapan samar antar penumpang', 'the sound of a train departure announcer, train horns, and faint conversations among passengers').trim()}. `;
+            promptEN += `The character speaks, ${charVoice.split('\n')[0].replace('dia berbicara dengan suara leaki-laki muda yang ramah.', 'he speaks with a friendly young male voice.').trim()} The voice details are: ${charVoice.split('\n').slice(1).join(', ').replace('Nada : Mezzo soprano','Tone: Mezzo soprano').replace('Timbre : bersahabat dan enerjik', 'Timbre: friendly and energetic').replace('Aksen / logat : logat indonesia dengan sentuhan khas depk betawi, berbicara murni dalam bahasa Indonesia', 'Accent: Indonesian with a hint of Depok-Betawi accent, speaking purely in Indonesian')}. `;
+            promptEN += `DIALOGUE in Indonesian: The character says: ${dialogueOnly}\n\n`;
+
+            promptEN += `**Important Note:** Ensure the character's voice is consistent. ${negativePrompt.replace('Hindari:', 'Avoid the following:')
+                                                                                                        .replace('teks di layar', 'on-screen text')
+                                                                                                        .replace('subtitle', 'subtitles')
+                                                                                                        .replace('tulisan di video', 'text in the video')
+                                                                                                        .replace('font', 'fonts')
+                                                                                                        .replace('logo', 'logos')
+                                                                                                        .replace('distorsi', 'distortion')
+                                                                                                        .replace('artefak', 'artifacts')
+                                                                                                        .replace('anomali', 'anomalies')
+                                                                                                        .replace('wajah ganda', 'duplicate faces')
+                                                                                                        .replace('anggota badan cacat', 'deformed limbs')
+                                                                                                        .replace('tangan tidak normal', 'abnormal hands')
+                                                                                                        .replace('orang tambahan', 'extra people')
+                                                                                                        .replace('objek mengganggu', 'distracting objects')
+                                                                                                        .replace('kualitas rendah', 'low quality')
+                                                                                                        .replace('buram', 'blurry')
+                                                                                                        .replace('glitch', 'glitches')
+                                                                                                        .replace('suara robotik', 'robotic voice')
+                                                                                                        .replace('suara pecah.', 'cracking voice.')
+                                                                                                        }`;
+
+            document.getElementById('output-english').value = promptEN;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateCameraMovements();
+            document.getElementById('generate-btn').addEventListener('click', generatePrompt);
+            
+            document.getElementById('copy-btn').addEventListener('click', function() {
+                const textarea = document.getElementById('output-english');
+                const textToCopy = textarea.value;
+                const copyButton = this;
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        copyButton.textContent = 'Failed!';
+                         setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                } else {
+                    // Fallback for older browsers
+                    const textArea = document.createElement("textarea");
+                    textArea.value = textToCopy;
+                    textArea.style.position = "fixed"; 
+                    textArea.style.left = "-9999px";
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        copyButton.textContent = 'Copied!';
+                    } catch (err) {
+                        console.error('Fallback: Oops, unable to copy', err);
+                        copyButton.textContent = 'Failed!';
+                    }
+                    document.body.removeChild(textArea);
+                    setTimeout(() => {
+                        copyButton.textContent = 'Copy';
+                    }, 2000);
+                }
+            });
+
+            // Generate on initial load
+            generatePrompt();
+        });
+    </script>
+
+</body>
+</html> 
